@@ -6,17 +6,61 @@ Application fullstack : backend Symfony 6.4 / API Platform + frontend React 19 /
 
 ## Démarrage rapide
 
+### 1. Configurer les variables d'environnement
+
+Copier les fichiers d'exemple et les adapter :
+
+```bash
+# Backend
+cp backend/.env.example backend/.env
+
+# Frontend
+cp frontend/.env.example frontend/.env
+```
+
+> Les fichiers `.env.example` contiennent tous les paramètres nécessaires avec des valeurs par défaut fonctionnelles pour un environnement local.
+
+### 2. Lancer les conteneurs
+
 ```bash
 docker compose up --build -d
 ```
 
-| Service         | URL                   |
-| --------------- | --------------------- |
-| Frontend (Vite) | http://localhost:3000 |
-| API (Nginx)     | http://localhost:8080 |
-| phpMyAdmin      | http://localhost:8081 |
+| Service         | URL                       |
+| --------------- | ------------------------- |
+| Frontend (Vite) | http://localhost:3000     |
+| API (Nginx)     | http://localhost:8080     |
+| phpMyAdmin      | http://localhost:8081     |
+| Swagger UI      | http://localhost:8080/api |
 
 Les migrations de base de données s'exécutent automatiquement au premier démarrage.
+
+---
+
+## Documentation de l'API (Swagger / OpenAPI)
+
+La documentation interactive est intégrée via **API Platform** — aucune configuration supplémentaire requise :
+
+| Interface                              | URL                                   |
+| -------------------------------------- | ------------------------------------- |
+| **Swagger UI** (interface principale)  | http://localhost:8080/api             |
+| **ReDoc** (lecture seule)              | http://localhost:8080/api/docs        |
+| **JSON-LD / Hydra** (machine-readable) | http://localhost:8080/api/docs.jsonld |
+
+Swagger UI permet de tester tous les endpoints directement depuis le navigateur (GET, POST, PUT, DELETE).
+
+---
+
+## Interface frontend
+
+L'interface est accessible sur **http://localhost:3000** et comprend les sections suivantes :
+
+| Page          | URL           | Description                                       |
+| ------------- | ------------- | ------------------------------------------------- |
+| **Accueil**   | `/`           | Page d'accueil avec liens de navigation           |
+| **Clients**   | `/customers`  | Liste paginée et recherchable de tous les clients |
+| **Commandes** | `/orders/:id` | Détail des commandes d'un client spécifique       |
+| **À propos**  | `/about`      | Description détaillée du test technique           |
 
 ---
 
