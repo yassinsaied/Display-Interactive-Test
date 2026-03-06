@@ -1,0 +1,6 @@
+purchase_identifier;customer_id;product_id;quantity;price;currency;date;reason
+;;;;;;;"Empty row"
+37/01;37;1221;1;10;EUR;2025-02-26;"Customer ID 37 not found"
+37/02;37;2123;1;13;EUR;2025-03-04;"Customer ID 37 not found"
+38/01;38;3213;1;9;EUR;2025-01-14;"Customer ID 38 not found"
+38/02;38;75672;1;91.2;EUR;2025-02-20;"Customer ID 38 not found"

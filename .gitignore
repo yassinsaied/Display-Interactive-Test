@@ -1,0 +1,32 @@
+# Environnement — seulement à la racine du projet (chaque sous-projet gère le sien)
+/.env
+/.env.local
+/.env.*.local
+
+# Fichiers CSV racine (artefacts Docker de bind-mount, les vrais CSV sont dans backend/data/)
+/customers.csv
+/purchases.csv
+
+# Dépendances
+node_modules/
+vendor/
+
+# Artefacts de build
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.orig
