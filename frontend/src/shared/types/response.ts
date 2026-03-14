@@ -18,10 +18,6 @@ export interface HydraCollection<T> {
 export interface PaginatedResponse<T> {
   data: T[];
   totalItems: number;
-  currentPage: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
 }
 
 export interface ApiResponse<T> {

@@ -1,32 +1,52 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { PageLayout, Spinner, ErrorMessage, Button, SearchInput, Pagination } from '@/shared/components';
+import {
+  PageLayout,
+  Spinner,
+  ErrorMessage,
+  Button,
+  SearchInput,
+  Pagination,
+} from '@/shared/components';
 import { customerService, CustomerOrdersList } from '@/features/customers';
-import { useSearch } from '@/shared/hooks';
+import { useSearch, usePagination } from '@/shared/hooks';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20];
 
 export function OrdersPage() {
   const { customerId } = useParams<{ customerId: string }>();
   const navigate = useNavigate();
-  const { searchTerm, debouncedTerm, setSearch } = useSearch();
-  const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const { searchTerm, debouncedTerm, setSearch } = useSearch();
+  const {
+    page,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+    nextPage,
+    prevPage,
+    goToPage,
+    resetPage,
+  } = usePagination({ totalItems, limit: itemsPerPage });
 
   useEffect(() => {
-    setPage(1);
-  }, [debouncedTerm, itemsPerPage]);
+    resetPage();
+  }, [debouncedTerm, itemsPerPage, resetPage]);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['orders', customerId, page, itemsPerPage, debouncedTerm],
-    queryFn: () =>
-      customerService.fetchCustomerOrders(
+    queryFn: async () => {
+      const result = await customerService.fetchCustomerOrders(
         Number(customerId),
         page,
         itemsPerPage,
         debouncedTerm || undefined
-      ),
+      );
+      setTotalItems(result.totalItems);
+      return result;
+    },
     enabled: !!customerId,
   });
 
@@ -58,7 +78,10 @@ export function OrdersPage() {
                 {debouncedTerm && <span className="ml-1">for &quot;{debouncedTerm}&quot;</span>}
               </p>
               <div className="flex items-center gap-2">
-                <label htmlFor="ordersPageSize" className="text-sm text-gray-500 dark:text-gray-400">
+                <label
+                  htmlFor="ordersPageSize"
+                  className="text-sm text-gray-500 dark:text-gray-400"
+                >
                   Show
                 </label>
                 <select
@@ -103,12 +126,12 @@ export function OrdersPage() {
             <CustomerOrdersList data={data} />
             <Pagination
               currentPage={page}
-              totalPages={data.totalPages}
-              hasNextPage={data.hasNextPage}
-              hasPreviousPage={data.hasPreviousPage}
-              onNextPage={() => data.hasNextPage && setPage(p => p + 1)}
-              onPreviousPage={() => data.hasPreviousPage && setPage(p => p - 1)}
-              onGoToPage={p => setPage(Math.max(1, Math.min(p, data.totalPages)))}
+              totalPages={totalPages}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              onNextPage={nextPage}
+              onPreviousPage={prevPage}
+              onGoToPage={goToPage}
             />
           </div>
         )}
@@ -118,4 +141,3 @@ export function OrdersPage() {
 }
 
 export default OrdersPage;
-

@@ -48,10 +48,6 @@ const mockOrdersResponse: CustomerOrdersResponse = {
     },
   ],
   total: 129.97,
-  currentPage: 1,
-  totalPages: 1,
-  hasNextPage: false,
-  hasPreviousPage: false,
   totalItems: 2,
 };
 

@@ -53,18 +53,6 @@ describe('customerService', () => {
       });
       expect(result.data).toHaveLength(2);
       expect(result.totalItems).toBe(25);
-      expect(result.currentPage).toBe(1);
-      expect(result.totalPages).toBe(3);
-    });
-
-    it('calculates pagination correctly', async () => {
-      vi.mocked(axiosInstance.get).mockResolvedValue(mockCustomersApiResponse);
-
-      const result = await customerService.fetchCustomers(2, 10);
-
-      expect(result.currentPage).toBe(2);
-      expect(result.hasNextPage).toBe(true);
-      expect(result.hasPreviousPage).toBe(true);
     });
 
     it('uses default limit of 10', async () => {

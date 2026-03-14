@@ -14,10 +14,5 @@ export interface CustomerOrdersResponse {
   customer: CustomerSummary;
   orders: Order[];
   total: number;
-  currentPage: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
   totalItems: number;
 }
-

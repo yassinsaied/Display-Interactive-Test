@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const DEFAULT_LIMIT = 10;
 
@@ -31,22 +31,25 @@ export function usePagination({
   const hasNextPage = page < totalPages;
   const hasPreviousPage = page > 1;
 
-  const nextPage = () => {
+  const nextPage = useCallback(() => {
     setPage(prev => (prev < totalPages ? prev + 1 : prev));
-  };
+  }, [totalPages]);
 
-  const prevPage = () => {
+  const prevPage = useCallback(() => {
     setPage(prev => (prev > 1 ? prev - 1 : prev));
-  };
+  }, []);
 
-  const goToPage = (newPage: number) => {
-    const validPage = Math.max(1, Math.min(newPage, totalPages));
-    setPage(validPage);
-  };
+  const goToPage = useCallback(
+    (newPage: number) => {
+      const validPage = Math.max(1, Math.min(newPage, totalPages));
+      setPage(validPage);
+    },
+    [totalPages]
+  );
 
-  const resetPage = () => {
+  const resetPage = useCallback(() => {
     setPage(initialPage);
-  };
+  }, [initialPage]);
 
   return {
     page,

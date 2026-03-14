@@ -36,10 +36,6 @@ const mockCustomersResponse: PaginatedResponse<Customer> = {
     },
   ],
   totalItems: 2,
-  currentPage: 1,
-  totalPages: 1,
-  hasNextPage: false,
-  hasPreviousPage: false,
 };
 
 describe('CustomersPage', () => {

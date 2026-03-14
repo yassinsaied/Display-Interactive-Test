@@ -4,28 +4,42 @@ import { useQuery } from '@tanstack/react-query';
 import { PageLayout, Spinner, ErrorMessage, Pagination, SearchInput } from '@/shared/components';
 import { customerService } from '@/features/customers';
 import { CustomerTable } from '@/features/customers';
-import { useSearch } from '@/shared/hooks';
+import { useSearch, usePagination } from '@/shared/hooks';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 export function CustomersPage() {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
   const { searchTerm, debouncedTerm, setSearch } = useSearch();
+  const {
+    page,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+    nextPage,
+    prevPage,
+    goToPage,
+    resetPage,
+  } = usePagination({ totalItems, limit: itemsPerPage });
 
   useEffect(() => {
-    setPage(1);
-  }, [debouncedTerm, itemsPerPage]);
+    resetPage();
+  }, [debouncedTerm, itemsPerPage, resetPage]);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['customers', page, itemsPerPage, debouncedTerm],
-    queryFn: () => customerService.fetchCustomers(page, itemsPerPage, debouncedTerm || undefined),
+    queryFn: async () => {
+      const result = await customerService.fetchCustomers(
+        page,
+        itemsPerPage,
+        debouncedTerm || undefined
+      );
+      setTotalItems(result.totalItems);
+      return result;
+    },
   });
-
-  const totalPages = data?.totalPages ?? 1;
-  const hasNextPage = data?.hasNextPage ?? false;
-  const hasPreviousPage = data?.hasPreviousPage ?? false;
 
   return (
     <PageLayout title="Customers" subtitle="Manage your customer database">
@@ -84,9 +98,9 @@ export function CustomersPage() {
             totalPages={totalPages}
             hasNextPage={hasNextPage}
             hasPreviousPage={hasPreviousPage}
-            onNextPage={() => hasNextPage && setPage(p => p + 1)}
-            onPreviousPage={() => hasPreviousPage && setPage(p => p - 1)}
-            onGoToPage={p => setPage(Math.max(1, Math.min(p, totalPages)))}
+            onNextPage={nextPage}
+            onPreviousPage={prevPage}
+            onGoToPage={goToPage}
           />
         </div>
       )}

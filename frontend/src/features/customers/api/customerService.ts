@@ -18,15 +18,10 @@ export const customerService = {
     });
 
     const { 'hydra:member': data, 'hydra:totalItems': totalItems } = response.data;
-    const totalPages = Math.ceil(totalItems / limit);
 
     return {
       data,
       totalItems,
-      currentPage: page,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
     };
   },
 
@@ -42,9 +37,7 @@ export const customerService = {
 
     type RawOrder = Order & { customer: CustomerSummary };
     const response = await axiosInstance.get<HydraCollection<RawOrder>>(url, { params });
-    const rawOrders = response.data['hydra:member'];
-    const totalItems = response.data['hydra:totalItems'] ?? rawOrders.length;
-    const totalPages = Math.ceil(totalItems / limit) || 1;
+    const { 'hydra:member': rawOrders, 'hydra:totalItems': totalItems } = response.data;
 
     const customer: CustomerSummary = rawOrders[0]?.customer ?? { id: customerId, lastname: null };
     const total = rawOrders.reduce((sum, o) => sum + o.price, 0);
@@ -62,14 +55,9 @@ export const customerService = {
       customer,
       orders,
       total,
-      currentPage: page,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
       totalItems,
     };
   },
 };
 
 export default customerService;
-
